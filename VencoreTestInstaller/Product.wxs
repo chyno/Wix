@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="VencoreTestInstaller" Language="1033" Version="1.0.0.0" Manufacturer="Microsoft" UpgradeCode="60d6a186-af44-4543-86de-19dba8af471c">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="VencoreTestInstaller" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="VencoreTestInstaller" />
+			</Directory>
+		</Directory>
+	</Fragment>
+<!--
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <File Source="$(var.VencoreTest.TargetPath)" />
+		</ComponentGroup>
+	</Fragment>
+  -->
+</Wix>

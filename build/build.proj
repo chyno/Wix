@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0"
+         DefaultTargets="Test"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <WixFile>Product.wxs</WixFile>
+    <WixBinPath>C:\Program Files (x86)\WiX Toolset v3.11\bin\</WixBinPath>
+    
+    <ProjectToBuild>VencoreTest.sln</ProjectToBuild>
+    <ProjectRoot>$([System.IO.Path]::GetFullPath(..))</ProjectRoot>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishFolder>$(ProjectRoot)/Deploy  </PublishFolder>
+    <WixSource>$(ProjectRoot)/VencoreTestInstaller/</WixSource>
+  
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+
+
+
+  <Target Name="Clean" >
+    <RemoveDir
+            Directories="$(PublishFolder),$(HarvestFolder)" />
+  </Target>
+
+
+  <Target Name="NugetRestore" DependsOnTargets="Clean">
+    <!-- set security on binaries-->
+    <Exec Command="echo 'Restoring nuget ....'"/>
+  </Target>
+
+
+
+  <Target Name="Build" DependsOnTargets="NugetRestore">
+
+    <MSBuild Projects="$(ProjectRoot)\$(ProjectToBuild)"
+      Properties="DeployOnBuild=false;Configuration=Release"/>
+  </Target>
+
+
+  <Target Name="Deploy" DependsOnTargets="Build">
+
+    <MSBuild Projects="$(ProjectRoot)\$(ProjectToBuild)"
+      Properties="Configuration=Release;DeployOnBuild=true;OutDir=$(PublishFolder)"/>
+  </Target>
+
+
+
+  <Target Name="Test">
+    <Exec
+        Command='"$(WixBinPath)candle" -dpublishDir=$(PublishFolder) $(WixFile)'
+        ContinueOnError="false"
+        WorkingDirectory="$(WixSource)" />
+  </Target>
+
+</Project>
