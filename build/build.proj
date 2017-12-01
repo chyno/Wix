@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0"
-         DefaultTargets="Test"
+         DefaultTargets="CreateMsi"
          xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
@@ -36,7 +36,9 @@
 
   <Target Name="Build" DependsOnTargets="NugetRestore">
 
-    <MSBuild Projects="$(ProjectRoot)\$(ProjectToBuild)"
+    <MSBuild
+      Projects="$(ProjectRoot)\$(ProjectToBuild)"
+      Targets="ReBuild"
       Properties="DeployOnBuild=false;Configuration=Release"/>
   </Target>
 
@@ -49,11 +51,25 @@
 
 
 
-  <Target Name="Test">
+  <Target Name="CreateMsi">
     <Exec
         Command='"$(WixBinPath)candle" -dpublishDir=$(PublishFolder) $(WixFile)'
         ContinueOnError="false"
         WorkingDirectory="$(WixSource)" />
+
+    <Exec
+        Command='"$(WixBinPath)candle" -dpublishDir=$(PublishFolder) $(WixFile)'
+        ContinueOnError="false"
+        WorkingDirectory="$(WixSource)" />
+
+    <Exec
+     Command='"$(WixPath)light" -out $(ProjectRoot)/VencoreTest.msi Product.wixobj'
+     ContinueOnError="true"
+     WorkingDirectory="$(WixSource)" />
+
+    <Delete Files="$(WixSource)/Product.wixobj" />
+
+
   </Target>
 
 </Project>
